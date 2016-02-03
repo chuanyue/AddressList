@@ -46,7 +46,7 @@ class CYGContactsViewController: UITableViewController,CYGAddViewControllerDeleg
         
     }
     
-    
+    //点击注销时弹出alert进行选择操作
     @IBAction func backToLoginItem(sender: UIStoryboardSegue) {
         let alert = UIAlertController(title: "返回登录", message: "", preferredStyle: .ActionSheet)
         
@@ -88,9 +88,13 @@ class CYGContactsViewController: UITableViewController,CYGAddViewControllerDeleg
         return indexPath
     }
     
+    //表格的删除操作
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        //删除模型数据
         contacts.removeAtIndex(indexPath.row)
+        
         tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
+        //归档保存
         NSKeyedArchiver.archiveRootObject(contacts, toFile: filePath!)
     }
     
@@ -111,8 +115,11 @@ class CYGContactsViewController: UITableViewController,CYGAddViewControllerDeleg
             let destinationCotroller = segue.destinationViewController as! CYGEditViewController
             destinationCotroller.contact = contact
             
+            //闭包中需执行的代码传递到目标控制器
             destinationCotroller.myclosure = {(contact:ContactData)->Void in
+                //更新的内容归档保存
                 NSKeyedArchiver.archiveRootObject(self.contacts, toFile: self.filePath!)
+                //刷新表格
                 self.tableView.reloadData()
             }
             //destinationCotroller.contactController = self

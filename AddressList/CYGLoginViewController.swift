@@ -26,15 +26,18 @@ class CYGLoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //取出保存在Preferences中的帐户名及两个switch的状态
         nameTextField.text = userDefaults.objectForKey(accountKey) as? String
         let remb = userDefaults.boolForKey(rememberKey)
         let autoLg = userDefaults.boolForKey(autoLoginKey)
         
+        //根据rememberPwdSwitch的状态设置密码框
         if remb {
             rememberPwdSwitch.on = true
             pwdTextField.text = userDefaults.objectForKey(passwordKey) as? String
         }
         
+        //判断autoLoginSwitch的状态进行自动登录
         if autoLg {
             autoLoginSwitch.on = true
             
@@ -61,27 +64,36 @@ class CYGLoginViewController: UIViewController {
        
         loginButton.enabled = (!nameTextField.text!.isEmpty)&&(!pwdTextField.text!.isEmpty)
     }
+    
+    //rememberPwdSwitch关闭则autoLoginSwitch必须关闭
     @IBAction func rememberPwdAction(sender: AnyObject) {
         if rememberPwdSwitch.on == false {
             autoLoginSwitch.setOn(false, animated: true)
         }
+        //保存rememberPwdSwitch的状态
         userDefaults.setBool(rememberPwdSwitch.on, forKey:rememberKey)
     }
-
+    
+    //autoLoginAction打开时，rememberPwdSwitch必须打开
     @IBAction func autoLoginAction(sender: AnyObject) {
         if autoLoginSwitch.on == true {
             rememberPwdSwitch.setOn(true, animated: true)
         }
+        //保存autoLoginAction的状态
         userDefaults.setBool(autoLoginSwitch.on, forKey: autoLoginKey)
     }
     
+    //MARK:- 判断帐户密码是否正确，如果正确就登录
     @IBAction func loginButton(sender: AnyObject) {
         if nameTextField.text == "chuanyue" && pwdTextField.text == "123456"{
+            //添加蒙板
             let loginning = MBProgressHUD.showHUDAddedTo(view, animated: true)
             loginning.mode = MBProgressHUDMode.Indeterminate
+            //模拟网络延迟登录
             afterDelay(0.5, closure: {
+                //结束蒙板
                 MBProgressHUD.hideHUDForView(self.view, animated: true)
-                
+                //保存帐户及密码
                 self.userDefaults.setObject(self.nameTextField.text, forKey: self.accountKey)
                 self.userDefaults.setObject(self.pwdTextField.text, forKey: self.passwordKey)
                 
@@ -98,6 +110,7 @@ class CYGLoginViewController: UIViewController {
         }
     }
     
+    //将帐户名传递到通讯录列表并显示在标题上
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         let contactsController = segue.destinationViewController
         contactsController.title = nameTextField.text! + "的联系人"

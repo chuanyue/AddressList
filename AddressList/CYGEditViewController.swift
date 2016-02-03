@@ -19,6 +19,7 @@ class CYGEditViewController: UIViewController {
     var contact:ContactData?
     //var contactController:CYGContactsViewController?
     
+    //定义闭包
     typealias Myclosure = (contact:ContactData)->Void
     var myclosure:Myclosure?
     
@@ -38,12 +39,16 @@ class CYGEditViewController: UIViewController {
         
         saveButton.enabled = (!nameField.text!.isEmpty)&&(!phoneField.text!.isEmpty)
     }
-
+    
+    //MARK:- 导航栏上的编辑和取消按钮的切换操作
     @IBAction func editAction(sender: AnyObject) {
         if editItem.title == "编辑"{
             nameField.enabled = true
             phoneField.enabled = true
+            
+            //进入编辑时，直接激活电话编辑框
             phoneField.becomeFirstResponder()
+            
             saveButton.hidden = false
             editItem.title = "取消"
             backItem.enabled = false
@@ -60,6 +65,7 @@ class CYGEditViewController: UIViewController {
         }
     }
     
+    //MARK:- 点击保存后，将更新的模型数据传递到闭包并执行闭包中的代码
     @IBAction func saveAction(sender: AnyObject) {
         contact?.name = nameField.text
         contact?.phone = phoneField.text
@@ -70,6 +76,7 @@ class CYGEditViewController: UIViewController {
         navigationController?.popViewControllerAnimated(true)
     }
     
+    //点击返回时，返回到上一个界面
     @IBAction func backAction(sender: AnyObject) {
         navigationController?.popViewControllerAnimated(true)
     }
